@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>सिंधीGPT - सिंधी भाषा सहायक</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #c2410c 0%, #ea580c 50%, #f97316 100%);
+        }
+        
+        .pattern-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .chat-container {
+            height: 400px;
+        }
+        
+        .message-appear {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .typing-indicator span {
+            animation: blink 1.4s infinite both;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes blink {
+            0%, 60%, 100% {
+                opacity: 0.3;
+            }
+            30% {
+                opacity: 1;
+            }
+        }
+
+        .decorative-border {
+            border-image: linear-gradient(to right, #c2410c, #f97316, #c2410c) 1;
+        }
+    </style>
+</head>
+<body class="bg-orange-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg pattern-bg text-white py-8 shadow-lg">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-white/30">
+                    <span class="text-3xl">🙏</span>
+                </div>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">सिंधीGPT</h1>
+            <p class="text-xl text-orange-100">सिंधी भाषा के लिए बहुभाषी AI सहायक</p>
+            <p class="text-orange-200 mt-2">सिंधी ऐं हिंदी में मदद लाई तयार</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Info Cards -->
+        <div class="grid md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-white rounded-xl p-5 shadow-md border-t-4 border-orange-500 hover:shadow-lg transition-shadow">
+                <div class="text-3xl mb-3">📚</div>
+                <h3 class="font-bold text-orange-800 mb-2">भाषा सहायता</h3>
+                <p class="text-gray-600 text-sm">सिंधी और हिंदी में बातचीत करें। देवनागरी लिपि में प्रश्न पूछें।</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 shadow-md border-t-4 border-orange-500 hover:shadow-lg transition-shadow">
+                <div class="text-3xl mb-3">🏛️</div>
+                <h3 class="font-bold text-orange-800 mb-2">संस्कृति और इतिहास</h3>
+                <p class="text-gray-600 text-sm">सिंधी संस्कृति, लोककथाएं, और परंपराओं के बारे में जानें।</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 shadow-md border-t-4 border-orange-500 hover:shadow-lg transition-shadow">
+                <div class="text-3xl mb-3">✨</div>
+                <h3 class="font-bold text-orange-800 mb-2">सरल संवाद</h3>
+                <p class="text-gray-600 text-sm">टूटे या मिश्रित भाषा के प्रश्नों को भी समझने में सक्षम।</p>
+            </div>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-orange-200">
+            <!-- Chat Header -->
+            <div class="bg-gradient-to-r from-orange-600 to-orange-500 px-6 py-4 flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <span class="text-xl">💬</span>
+                </div>
+                <div>
+                    <h2 class="text-white font-semibold">सिंधीGPT से बात करें</h2>
+                    <p class="text-orange-100 text-sm">सिंधी • हिंदी • देवनागरी</p>
+                </div>
+                <div class="ml-auto flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    <span class="text-orange-100 text-sm">ऑनलाइन</span>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="chat-container overflow-y-auto p-4 bg-gradient-to-b from-orange-50 to-white">
+                <!-- Welcome Message -->
+                <div class="flex gap-3 mb-4 message-appear">
+                    <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-white text-sm">स</span>
+                    </div>
+                    <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-orange-100 max-w-md">
+                        <p class="text-gray-800">नमस्कार! 🙏</p>
+                        <p class="text-gray-700 mt-2">मां सिंधीGPT आहियां। तुहांजी सिंधी ऐं हिंदी में मदद करण लाई तयार आहियां।</p>
+                        <p class="text-gray-600 mt-2 text-sm">मुझसे सिंधी भाषा, संस्कृति, व्याकरण या कोई भी प्रश्न पूछें!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 border-t border-orange-100 bg-white">
+                <div class="flex gap-3">
+                    <input 
+                        type="text" 
+                        id="userInput" 
+                        placeholder="यहां अपना प्रश्न लिखें... (सिंधी या हिंदी में)"
+                        class="flex-1 px-4 py-3 rounded-xl border border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
+                        onkeypress="handleKeyPress(event)"
+                    >
+                    <button 
+                        onclick="sendMessage()"
+                        class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
+                    >
+                        <span>भेजें</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Quick Suggestions -->
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <button onclick="askQuestion('सिंधी भाषा के बारे में बताओ')" class="text-sm px-3 py-1.5 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-full transition-colors">
+                        सिंधी भाषा के बारे में बताओ
+                    </button>
+                    <button onclick="askQuestion('तूं कौं आहे?')" class="text-sm px-3 py-1.5 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-full transition-colors">
+                        तूं कौं आहे?
+                    </button>
+                    <button onclick="askQuestion('सिंध जा लोककथा सुणाय')" class="text-sm px-3 py-1.5 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-full transition-colors">
+                        सिंध जा लोककथा सुणाय
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div class="mt-8 bg-white rounded-2xl p-6 shadow-md border border-orange-100">
+            <h3 class="text-xl font-bold text-orange-800 mb-4 flex items-center gap-2">
+                <span>📖</span> परियोजना के बारे में
+            </h3>
+            <div class="text-gray-700 space-y-3">
+                <p>
+                    <strong>सिंधीGPT</strong> एक शैक्षणिक परियोजना है जो कम-संसाधन भाषा समुदायों की सेवा के लिए बनाई गई है।
+                </p>
+                <p>
+                    यह एक प्रीट्रेंड लार्ज लैंग्वेज मॉडल से अनुकूलित सिंधी भाषा चैटबॉट है, जो प्रॉम्प्ट इंजीनियरिंग का उपयोग करता है।
+                </p>
+                <div class="bg-orange-50 rounded-lg p-4 mt-4">
+                    <p class="text-sm text-orange-800">
+                        <strong>विशेषताएं:</strong> देवनागरी लिपि समर्थन • OCR त्रुटि सहनशीलता • हिंदी-सिंधी मिश्रण समर्थन • सांस्कृतिक सटीकता
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-orange-800 text-orange-100 py-6 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-2">🕉️ जय सिंध • जय हिंद 🙏</p>
+            <p class="text-sm text-orange-200">सिंधीGPT - शैक्षणिक परियोजना | देवनागरी लिपि में सिंधी भाषा सहायक</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample responses for demo
+        const responses = {
+            'सिंधी भाषा के बारे में बताओ': 'सिंधी भाषा भारत और पाकिस्तान के सिंध क्षेत्र में बोली जाने वाली एक प्राचीन और समृद्ध भाषा है। यह भारत की 22 आधिकारिक भाषाओं में से एक है।\n\nइस भाषा का इतिहास लगभग 5000 वर्ष पुराना है और यह सिंधु घाटी सभ्यता से जुड़ी हुई है। सिंधी साहित्य में शाह अब्दुल लतीफ भिटाई, सचल सरमस्त जैसे महान कवियों की रचनाएं शामिल हैं।',
+            
+            'तूं कौं आहे?': 'मां सिंधीGPT आहियां! 🙏\n\nमां हिकड़ो AI सहायक आहियां जेको सिंधी ऐं हिंदी भाषा में मदद करे थो। तुहांजी सेवा में हाजिर आहियां - सिंधी भाषा, संस्कृति, व्याकरण, या किसी भी प्रश्न में मदद करण लाई।',
+            
+            'सिंध जा लोककथा सुणाय': 'सुणो हिकड़ी मशहूर लोककथा:\n\n📖 **ससई-पुन्हूं जी कहाणी**\n\nससई हिकड़ी खूबसूरत ऐं वफादार स्त्री हई, जंहिजो प्रेमी पुन्हूं हो। पुन्हूं कच्छ जो राजकुमार हो। उनहिंजी प्रेम कहाणी सिंध जी सभ खां मशहूर दास्तां आहे।\n\nहिअ कहाणी सच्चे प्रेम, बलिदान ऐं वफादारी जो प्रतीक आहे। शाह लतीफ भिटाई पनहिंजे काव्य में हिन कहाणी खे अमर करे छड्यो आहे। 💕'
+        };
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            showTyping();
+            
+            // Simulate response delay
+            setTimeout(() => {
+                hideTyping();
+                const response = getResponse(message);
+                addMessage(response, 'bot');
+            }, 1500);
+        }
+
+        function askQuestion(question) {
+            document.getElementById('userInput').value = question;
+            sendMessage();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function addMessage(text, sender) {
+            const chatContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex gap-3 mb-4 message-appear ${sender === 'user' ? 'justify-end' : ''}`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="bg-orange-500 text-white rounded-2xl rounded-tr-none px-4 py-3 shadow-sm max-w-md">
+                        <p>${text}</p>
+                    </div>
+                    <div class="w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-orange-700 text-sm">👤</span>
+                    </div>
+                `;
+            } else {
+                const formattedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                messageDiv.innerHTML = `
+                    <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-white text-sm">स</span>
+                    </div>
+                    <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-orange-100 max-w-md">
+                        <p class="text-gray-800">${formattedText}</p>
+                    </div>
+                `;
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showTyping() {
+            const chatContainer = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'flex gap-3 mb-4 message-appear';
+            typingDiv.innerHTML = `
+                <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="text-white text-sm">स</span>
+                </div>
+                <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-orange-100">
+                    <div class="typing-indicator flex gap-1">
+                        <span class="w-2 h-2 bg-orange-400 rounded-full"></span>
+                        <span class="w-2 h-2 bg-orange-400 rounded-full"></span>
+                        <span class="w-2 h-2 bg-orange-400 rounded-full"></span>
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function hideTyping() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function getResponse(message) {
+            // Check for predefined responses
+            for (const [key, value] of Object.entries(responses)) {
+                if (message.includes(key) || key.includes(message)) {
+                    return value;
+                }
+            }
+            
+            // Default responses based on keywords
+            if (message.includes('नमस्कार') || message.includes('नमस्ते') || message.includes('हेलो')) {
+                return 'नमस्कार! 🙏 सुख सांती!\n\nतुहांजी सेवा में सिंधीGPT हाजिर आहे। मूंखां कुछ पुछो - सिंधी भाषा, संस्कृति, या कोई भी प्रश्न!';
+            }
+            
+            if (message.includes('धन्यवाद') || message.includes('शुक्रिया')) {
+                return 'तुहांजो स्वागत आहे! 🙏\n\nमदद करण में खुशी थई। कोई ऐं सवाल होवे त जरूर पुछो!';
+            }
+            
+            if (message.includes('कैसे') || message.includes('कीअं')) {
+                return 'मां तुहांजी मदद करण लाई हाजिर आहियां!\n\nतुहांजो सवाल थोड़ो विस्तार से पुछो ता मां बेहतर जवाब ड्यां।';
+            }
+            
+            // Generic response
+            return 'तुहांजो सवाल मूंखां समझ में आयो। 🙏\n\nहिअ हिकड़ो डेमो इंटरफ़ेस आहे। पूरे AI मॉडल सां जुड़ण बाद, मां तुहांजे सभ सवालन जा विस्तृत जवाब ड्यांदोसि।\n\nसुझाव बटन ते क्लिक करो या सिंधी/हिंदी में सवाल पुछो!';
+        }
+    </script>
+</body>
+</html>
